@@ -11,39 +11,42 @@ import {
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Features = () => {
+  const { t } = useLanguage();
+  
   const mainFeatures = [
     {
       icon: Bot,
-      title: 'AI Health Assistant',
-      description: 'Get instant, personalized health advice powered by advanced AI algorithms trained on medical knowledge.',
-      features: ['Natural language processing', 'Symptom analysis', 'Treatment suggestions'],
+      title: t('features.ai.title'),
+      description: t('features.ai.description'),
+      features: [t('features.ai.feature1'), t('features.ai.feature2'), t('features.ai.feature3')],
       gradient: 'from-blue-500 to-cyan-500'
     },
     {
       icon: Stethoscope,
-      title: 'Smart Symptom Checker',
-      description: 'Advanced diagnostic tool that analyzes your symptoms and provides accurate health assessments.',
-      features: ['Multi-symptom analysis', 'Risk assessment', 'Doctor recommendations'],
+      title: t('features.symptom.title'),
+      description: t('features.symptom.description'),
+      features: [t('features.symptom.feature1'), t('features.symptom.feature2'), t('features.symptom.feature3')],
       gradient: 'from-green-500 to-emerald-500'
     },
     {
       icon: Bell,
-      title: 'Health Alerts & Reminders',
-      description: 'Stay on top of your health with intelligent notifications and personalized reminders.',
-      features: ['Vaccination reminders', 'Medication alerts', 'Health checkups'],
+      title: t('features.alerts.title'),
+      description: t('features.alerts.description'),
+      features: [t('features.alerts.feature1'), t('features.alerts.feature2'), t('features.alerts.feature3')],
       gradient: 'from-purple-500 to-pink-500'
     }
   ];
 
   const additionalFeatures = [
-    { icon: Shield, title: 'Privacy First', description: 'End-to-end encryption for all your health data' },
-    { icon: Users, title: 'Family Profiles', description: 'Manage health for your entire family' },
-    { icon: BarChart3, title: 'Health Analytics', description: 'Track trends and get insights' },
-    { icon: Clock, title: '24/7 Availability', description: 'Access healthcare advice anytime' },
-    { icon: Heart, title: 'Wellness Tracking', description: 'Monitor vital signs and activities' },
-    { icon: Brain, title: 'Mental Health', description: 'AI-powered mental wellness support' }
+    { icon: Shield, title: t('features.privacy.title'), description: t('features.privacy.description') },
+    { icon: Users, title: t('features.family.title'), description: t('features.family.description') },
+    { icon: BarChart3, title: t('features.analytics.title'), description: t('features.analytics.description') },
+    { icon: Clock, title: t('features.availability.title'), description: t('features.availability.description') },
+    { icon: Heart, title: t('features.wellness.title'), description: t('features.wellness.description') },
+    { icon: Brain, title: t('features.mental.title'), description: t('features.mental.description') }
   ];
 
   return (
@@ -52,16 +55,17 @@ const Features = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <Badge className="mb-4 glass border-primary/20">
-            ✨ Core Features
+            {t('features.badge')}
           </Badge>
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Everything you need for
-            <br />
-            <span className="text-gradient">smarter healthcare</span>
+            {t('features.title').split(' ').map((word, index) => 
+              word === 'healthcare' || word === 'स्वास्थ्य' ? 
+                <span key={index} className="text-gradient">{word} </span> : 
+                word + ' '
+            )}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Our comprehensive platform combines AI technology with medical expertise 
-            to deliver personalized healthcare solutions.
+            {t('features.description')}
           </p>
         </div>
 
@@ -111,23 +115,23 @@ const Features = () => {
         <div className="text-center mt-16">
           <Card className="glass border-glass-border/20 p-8 md:p-12">
             <h3 className="text-2xl md:text-3xl font-bold mb-4">
-              Ready to experience the future of healthcare?
+              {t('features.cta.title')}
             </h3>
             <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join thousands of users who trust ArogyaAI for their health and wellness needs.
+              {t('features.cta.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 className="px-8 py-3 bg-gradient-primary text-primary-foreground rounded-lg font-semibold hover:scale-105 transition-transform duration-300 glow"
                 onClick={() => document.getElementById('chatbot')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Try AI Assistant Now
+                {t('features.cta.try')}
               </button>
               <button 
                 className="px-8 py-3 glass border-primary/30 rounded-lg font-semibold hover-lift"
                 onClick={() => document.getElementById('dashboard')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                View Dashboard
+                {t('features.cta.view')}
               </button>
             </div>
           </Card>

@@ -18,15 +18,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('overview');
+  const { t } = useLanguage();
 
   const healthMetrics = [
-    { label: 'Blood Pressure', value: '120/80', status: 'normal', icon: Heart },
-    { label: 'Heart Rate', value: '72 bpm', status: 'normal', icon: Activity },
-    { label: 'Weight', value: '70 kg', status: 'stable', icon: TrendingUp },
-    { label: 'BMI', value: '22.5', status: 'healthy', icon: User }
+    { label: t('dashboard.metrics.bp'), value: '120/80', status: 'normal', icon: Heart },
+    { label: t('dashboard.metrics.hr'), value: '72 bpm', status: 'normal', icon: Activity },
+    { label: t('dashboard.metrics.weight'), value: '70 kg', status: 'stable', icon: TrendingUp },
+    { label: t('dashboard.metrics.bmi'), value: '22.5', status: 'healthy', icon: User }
   ];
 
   const recentConsultations = [
@@ -60,10 +62,10 @@ const Dashboard = () => {
   ];
 
   const healthGoals = [
-    { name: 'Daily Steps', current: 8500, target: 10000, unit: 'steps' },
-    { name: 'Water Intake', current: 6, target: 8, unit: 'glasses' },
-    { name: 'Sleep Hours', current: 7.5, target: 8, unit: 'hours' },
-    { name: 'Exercise', current: 4, target: 5, unit: 'days/week' }
+    { name: t('dashboard.goals.steps'), current: 8500, target: 10000, unit: 'steps' },
+    { name: t('dashboard.goals.water'), current: 6, target: 8, unit: 'glasses' },
+    { name: t('dashboard.goals.sleep'), current: 7.5, target: 8, unit: 'hours' },
+    { name: t('dashboard.goals.exercise'), current: 4, target: 5, unit: 'days/week' }
   ];
 
   const vaccineSchedule = [
@@ -134,25 +136,28 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 lg:px-6">
         <div className="text-center mb-12">
           <Badge className="mb-4 glass border-primary/20">
-            📊 Your Health Dashboard
+            {t('dashboard.badge')}
           </Badge>
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Personal <span className="text-gradient">Health Center</span>
+            {t('dashboard.title').split(' ').map((word, index) => 
+              word === 'Health' || word === 'स्वास्थ्य' ? 
+                <span key={index} className="text-gradient">{word} </span> : 
+                word + ' '
+            )}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Track your health metrics, view consultation history, and manage 
-            your wellness journey in one comprehensive dashboard.
+            {t('dashboard.description')}
           </p>
         </div>
 
         <div className="max-w-7xl mx-auto">
           <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
             <TabsList className="grid w-full grid-cols-5 glass">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="consultations">Consultations</TabsTrigger>
-              <TabsTrigger value="reminders">Reminders</TabsTrigger>
-              <TabsTrigger value="vaccines">Vaccines</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
+              <TabsTrigger value="overview">{t('dashboard.tabs.overview')}</TabsTrigger>
+              <TabsTrigger value="consultations">{t('dashboard.tabs.consultations')}</TabsTrigger>
+              <TabsTrigger value="reminders">{t('dashboard.tabs.reminders')}</TabsTrigger>
+              <TabsTrigger value="vaccines">{t('dashboard.tabs.vaccines')}</TabsTrigger>
+              <TabsTrigger value="settings">{t('dashboard.tabs.settings')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-8">
@@ -181,7 +186,7 @@ const Dashboard = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-primary" />
-                    Health Goals Progress
+                    {t('dashboard.goals.title')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -316,7 +321,7 @@ const Dashboard = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Shield className="w-5 h-5 text-primary" />
-                    Vaccination Schedule
+                    {t('dashboard.vaccines.title')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>

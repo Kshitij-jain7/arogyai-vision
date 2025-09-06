@@ -1,21 +1,24 @@
 import { ArrowRight, Bot, Shield, Zap, HeartPulse } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/contexts/LanguageContext';
 import heroImage from '@/assets/hero-medical-ai.jpg';
 
 const Hero = () => {
+  const { language, setLanguage, t } = useLanguage();
+  
   const stats = [
-    { number: '50K+', label: 'Users Helped' },
-    { number: '95%', label: 'Accuracy Rate' },
-    { number: '24/7', label: 'Available' },
-    { number: '15+', label: 'Languages' }
+    { number: '50K+', label: t('hero.stats.users') },
+    { number: '95%', label: t('hero.stats.accuracy') },
+    { number: '24/7', label: t('hero.stats.available') },
+    { number: '15+', label: t('hero.stats.languages') }
   ];
 
   const features = [
-    { icon: Bot, text: 'AI-Powered Diagnosis' },
-    { icon: Shield, text: 'HIPAA Compliant' },
-    { icon: Zap, text: 'Instant Results' },
-    { icon: HeartPulse, text: 'Real-time Monitoring' }
+    { icon: Bot, text: t('hero.features.diagnosis') },
+    { icon: Shield, text: t('hero.features.compliant') },
+    { icon: Zap, text: t('hero.features.instant') },
+    { icon: HeartPulse, text: t('hero.features.monitoring') }
   ];
 
   return (
@@ -29,18 +32,19 @@ const Hero = () => {
           {/* Left Content */}
           <div className="fade-in-up">
             <Badge className="mb-6 glass text-primary border-primary/20">
-              🚀 New: AI Health Assistant 2.0
+              {t('hero.badge')}
             </Badge>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-              Smarter <span className="text-gradient">Healthcare</span>
-              <br />
-              with AI
+              {t('hero.title').split(' ').map((word, index) => 
+                word === 'Healthcare' || word === 'स्वास्थ्य' ? 
+                  <span key={index} className="text-gradient">{word} </span> : 
+                  word + ' '
+              )}
             </h1>
             
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
-              ArogyaAI empowers communities with real-time health insights, AI-powered diagnostics, 
-              and personalized care recommendations—all in one intelligent platform.
+              {t('hero.description')}
             </p>
 
             {/* Action Buttons */}
@@ -50,7 +54,7 @@ const Hero = () => {
                 className="bg-gradient-primary hover:scale-105 transition-transform duration-300 glow text-lg px-8 py-6"
                 onClick={() => document.getElementById('chatbot')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Start AI Consultation
+                {t('hero.cta.primary')}
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
               
@@ -60,7 +64,7 @@ const Hero = () => {
                 className="glass border-primary/30 hover:bg-primary/10 text-lg px-8 py-6 hover-lift"
                 onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Learn More
+                {t('hero.cta.secondary')}
               </Button>
             </div>
 
@@ -79,12 +83,22 @@ const Hero = () => {
 
             {/* Language Selection */}
             <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">Choose your language:</span>
+              <span className="text-sm text-muted-foreground">{t('hero.language')}</span>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="glass">
+                <Button 
+                  variant={language === 'en' ? 'default' : 'outline'} 
+                  size="sm" 
+                  className="glass"
+                  onClick={() => setLanguage('en')}
+                >
                   English
                 </Button>
-                <Button variant="outline" size="sm" className="glass">
+                <Button 
+                  variant={language === 'hi' ? 'default' : 'outline'} 
+                  size="sm" 
+                  className="glass"
+                  onClick={() => setLanguage('hi')}
+                >
                   हिंदी
                 </Button>
               </div>

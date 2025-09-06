@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X, Search, Bot, User, HeartPulse } from 'lucide-react';
+import { Moon, Sun, Menu, X, Search, Bot, User, HeartPulse, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Header = () => {
   const [isDark, setIsDark] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -30,11 +32,11 @@ const Header = () => {
   };
 
   const navItems = [
-    { label: 'Home', href: '#home', icon: HeartPulse },
-    { label: 'AI Assistant', href: '#chatbot', icon: Bot },
-    { label: 'Dashboard', href: '#dashboard', icon: User },
-    { label: 'FAQ', href: '#faq', icon: HeartPulse },
-    { label: 'Blog', href: '#blog', icon: HeartPulse },
+    { label: t('header.nav.home'), href: '#home', icon: HeartPulse },
+    { label: t('header.nav.assistant'), href: '#chatbot', icon: Bot },
+    { label: t('header.nav.dashboard'), href: '#dashboard', icon: User },
+    { label: t('header.nav.faq'), href: '#faq', icon: HeartPulse },
+    { label: t('header.nav.blog'), href: '#blog', icon: HeartPulse },
   ];
 
   const NavContent = () => (
@@ -62,8 +64,8 @@ const Header = () => {
               <HeartPulse className="w-6 h-6 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <h1 className="font-bold text-xl text-gradient">ArogyaAI</h1>
-              <p className="text-xs text-muted-foreground">Smarter Healthcare</p>
+              <h1 className="font-bold text-xl text-gradient">{t('header.logo')}</h1>
+              <p className="text-xs text-muted-foreground">{t('header.tagline')}</p>
             </div>
           </div>
 
@@ -79,13 +81,26 @@ const Header = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search health topics..."
+                  placeholder={t('header.search')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 w-64 glass border-glass-border/30 focus:border-primary/50"
                 />
               </div>
             </form>
+
+            {/* Language Toggle */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
+                className="glass hover:bg-primary/20 hover-glow flex items-center gap-2"
+              >
+                <Globe className="w-4 h-4" />
+                {language === 'en' ? 'हिं' : 'Eng'}
+              </Button>
+            </div>
 
             {/* Theme Toggle */}
             <Button
@@ -111,7 +126,7 @@ const Header = () => {
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        placeholder="Search health topics..."
+                        placeholder={t('header.search')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-10 glass border-glass-border/30"

@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getBotResponseInHindi, getBotResponseInEnglish } from './ChatBotResponses';
 
 interface Message {
   id: string;
@@ -15,11 +17,13 @@ interface Message {
 }
 
 const ChatBot = () => {
+  const { t, language } = useLanguage();
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       type: 'bot',
-      content: 'Hello! I\'m your AI Health Assistant. How can I help you today? You can ask me about symptoms, medications, health advice, or general wellness questions.',
+      content: t('chatbot.greeting'),
       timestamp: new Date()
     }
   ]);
@@ -30,11 +34,11 @@ const ChatBot = () => {
   const { toast } = useToast();
 
   const quickQuestions = [
-    "I have a headache and fever",
-    "What are the symptoms of flu?",
-    "How to maintain healthy blood pressure?",
-    "When should I see a doctor?",
-    "COVID-19 vaccination schedule"
+    t('chatbot.quick.headache'),
+    t('chatbot.quick.flu'),
+    t('chatbot.quick.bp'),
+    t('chatbot.quick.doctor'),
+    t('chatbot.quick.vaccine')
   ];
 
   const scrollToBottom = () => {
@@ -73,29 +77,10 @@ const ChatBot = () => {
   };
 
   const getBotResponse = (userMessage: string): string => {
-    const msg = userMessage.toLowerCase();
-    
-    if (msg.includes('headache') || msg.includes('fever')) {
-      return 'Based on your symptoms of headache and fever, this could indicate various conditions including viral infections, stress, or dehydration. I recommend:\n\n• Rest and stay hydrated\n• Take over-the-counter pain relievers as directed\n• Monitor your temperature\n• Consult a doctor if symptoms persist for >48 hours or worsen\n\nPlease seek immediate medical attention if you experience severe symptoms like difficulty breathing, chest pain, or persistent high fever.';
+    if (language === 'hi') {
+      return getBotResponseInHindi(userMessage);
     }
-    
-    if (msg.includes('flu') || msg.includes('influenza')) {
-      return 'Common flu symptoms include:\n\n• Fever (usually high)\n• Body aches and muscle pain\n• Headache\n• Fatigue and weakness\n• Cough\n• Sore throat\n• Runny or stuffy nose\n• Sometimes nausea or vomiting\n\nPrevention tips:\n• Annual flu vaccination\n• Frequent hand washing\n• Avoid close contact with sick individuals\n• Cover coughs and sneezes\n\nSee a doctor if symptoms are severe or if you\'re in a high-risk group.';
-    }
-    
-    if (msg.includes('blood pressure')) {
-      return 'To maintain healthy blood pressure:\n\n• Eat a balanced diet low in sodium\n• Exercise regularly (30 min, 5 days/week)\n• Maintain healthy weight\n• Limit alcohol consumption\n• Don\'t smoke\n• Manage stress through relaxation techniques\n• Get adequate sleep (7-9 hours)\n• Monitor BP regularly\n\nNormal BP: <120/80 mmHg\nHigh BP: ≥130/80 mmHg\n\nConsult your doctor for personalized advice and if readings are consistently high.';
-    }
-    
-    if (msg.includes('doctor') || msg.includes('hospital')) {
-      return 'You should see a doctor when:\n\n🚨 Emergency situations:\n• Chest pain or difficulty breathing\n• Severe allergic reactions\n• High fever (>103°F/39.4°C)\n• Severe bleeding or trauma\n• Signs of stroke or heart attack\n\n📋 Regular check-ups:\n• Persistent symptoms >2 weeks\n• Chronic condition management\n• Preventive screenings\n• Medication reviews\n• Annual physical exams\n\nTrust your instincts - if something feels seriously wrong, don\'t hesitate to seek medical care.';
-    }
-    
-    if (msg.includes('covid') || msg.includes('vaccination')) {
-      return 'COVID-19 vaccination information:\n\n💉 Current recommendations:\n• Primary series: 2 doses of mRNA vaccine\n• Boosters: As recommended by CDC\n• Updated boosters available seasonally\n\n🩺 Who should get vaccinated:\n• Everyone 6 months and older\n• Special consideration for high-risk groups\n\n📅 Timing:\n• Between doses: 3-8 weeks apart\n• After infection: Wait 90 days\n\nConsult your healthcare provider for personalized guidance based on your health status and local guidelines.';
-    }
-    
-    return 'Thank you for your question. While I can provide general health information, I recommend consulting with a healthcare professional for personalized medical advice. Is there anything specific about your symptoms or health concerns you\'d like me to help clarify?';
+    return getBotResponseInEnglish(userMessage);
   };
 
   const handleRating = (messageId: string, rating: 'up' | 'down') => {
@@ -137,14 +122,17 @@ const ChatBot = () => {
       <div className="container mx-auto px-4 lg:px-6">
         <div className="text-center mb-12">
           <Badge className="mb-4 glass border-primary/20">
-            🤖 AI Assistant
+            {t('chatbot.badge')}
           </Badge>
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Chat with our <span className="text-gradient">AI Health Assistant</span>
+            {t('chatbot.title').split(' ').map((word, index) => 
+              word === 'Assistant' || word === 'सहायक' ? 
+                <span key={index} className="text-gradient">{word} </span> : 
+                word + ' '
+            )}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Get instant health advice, symptom analysis, and medical information 
-            from our advanced AI system trained on medical knowledge.
+            {t('chatbot.description')}
           </p>
         </div>
 
@@ -156,9 +144,9 @@ const ChatBot = () => {
                   <Bot className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <div className="font-semibold">AI Health Assistant</div>
+                  <div className="font-semibold">{t('chatbot.badge').replace('🤖 ', '')}</div>
                   <div className="text-sm text-muted-foreground font-normal">
-                    Online • Powered by Medical AI
+                    {t('chatbot.status')}
                   </div>
                 </div>
               </CardTitle>
@@ -192,7 +180,7 @@ const ChatBot = () => {
                         
                         {message.type === 'bot' && (
                           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-glass-border/20">
-                            <span className="text-xs text-muted-foreground">Was this helpful?</span>
+                            <span className="text-xs text-muted-foreground">{t('chatbot.helpful')}</span>
                             <div className="flex gap-1">
                               <Button
                                 variant="ghost"
@@ -260,7 +248,7 @@ const ChatBot = () => {
                     <Input
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      placeholder="Ask me about your health concerns..."
+                      placeholder={t('chatbot.placeholder')}
                       onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                       className="glass border-glass-border/30 pr-12"
                     />
