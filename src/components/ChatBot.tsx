@@ -133,7 +133,7 @@ const ChatBot = () => {
   };
 
   return (
-    <section id="chatbot" className="py-24">
+    <section id="chatbot" className="py-24 relative">
       <div className="container mx-auto px-4 lg:px-6">
         <div className="text-center mb-12">
           <Badge className="mb-4 glass border-primary/20">
@@ -148,8 +148,8 @@ const ChatBot = () => {
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <Card className="glass border-glass-border/20 h-[600px] flex flex-col">
+        <div className="max-w-4xl mx-auto relative z-10">
+          <Card className="glass border-glass-border/20 h-[600px] flex flex-col shadow-2xl">
             <CardHeader className="border-b border-glass-border/20">
               <CardTitle className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center">

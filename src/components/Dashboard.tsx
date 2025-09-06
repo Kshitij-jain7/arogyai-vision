@@ -9,7 +9,9 @@ import {
   Plus,
   TrendingUp,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Shield,
+  Clock
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -64,11 +66,57 @@ const Dashboard = () => {
     { name: 'Exercise', current: 4, target: 5, unit: 'days/week' }
   ];
 
+  const vaccineSchedule = [
+    {
+      id: 1,
+      name: 'COVID-19 Booster',
+      dueDate: '2024-02-15',
+      status: 'upcoming',
+      priority: 'high',
+      description: 'Annual COVID-19 booster shot recommended'
+    },
+    {
+      id: 2,
+      name: 'Flu Vaccine',
+      dueDate: '2024-09-01',
+      status: 'scheduled',
+      priority: 'medium',
+      description: 'Seasonal influenza vaccination'
+    },
+    {
+      id: 3,
+      name: 'Hepatitis B',
+      dueDate: '2024-06-20',
+      status: 'overdue',
+      priority: 'high',
+      description: 'Second dose of Hepatitis B series'
+    },
+    {
+      id: 4,
+      name: 'Tetanus',
+      dueDate: '2023-12-10',
+      status: 'completed',
+      priority: 'medium',
+      description: 'Tetanus booster shot completed',
+      completedDate: '2023-12-08'
+    }
+  ];
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'normal': case 'healthy': case 'completed': return 'text-success';
       case 'pending': case 'upcoming': return 'text-warning';
       case 'scheduled': return 'text-primary';
+      case 'overdue': return 'text-destructive';
+      default: return 'text-muted-foreground';
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'text-destructive';
+      case 'medium': return 'text-warning';
+      case 'low': return 'text-muted-foreground';
       default: return 'text-muted-foreground';
     }
   };
@@ -99,10 +147,11 @@ const Dashboard = () => {
 
         <div className="max-w-7xl mx-auto">
           <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 glass">
+            <TabsList className="grid w-full grid-cols-5 glass">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="consultations">Consultations</TabsTrigger>
               <TabsTrigger value="reminders">Reminders</TabsTrigger>
+              <TabsTrigger value="vaccines">Vaccines</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
 
@@ -260,6 +309,104 @@ const Dashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="vaccines" className="space-y-6">
+              <Card className="glass border-glass-border/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-primary" />
+                    Vaccination Schedule
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {vaccineSchedule.map((vaccine) => (
+                      <div 
+                        key={vaccine.id}
+                        className="flex items-center justify-between p-4 rounded-lg glass border-glass-border/20"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            vaccine.status === 'completed' ? 'bg-success/10' :
+                            vaccine.status === 'overdue' ? 'bg-destructive/10' :
+                            'bg-primary/10'
+                          }`}>
+                            {vaccine.status === 'completed' ? (
+                              <CheckCircle className="w-5 h-5 text-success" />
+                            ) : vaccine.status === 'overdue' ? (
+                              <AlertCircle className="w-5 h-5 text-destructive" />
+                            ) : (
+                              <Shield className="w-5 h-5 text-primary" />
+                            )}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-medium">{vaccine.name}</h4>
+                              <Badge 
+                                variant="outline" 
+                                className={`text-xs ${getPriorityColor(vaccine.priority)}`}
+                              >
+                                {vaccine.priority} priority
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{vaccine.description}</p>
+                            <div className="flex items-center gap-1 mt-1">
+                              <Clock className="w-3 h-3 text-muted-foreground" />
+                              <span className="text-xs text-muted-foreground">
+                                {vaccine.status === 'completed' 
+                                  ? `Completed: ${vaccine.completedDate}`
+                                  : `Due: ${vaccine.dueDate}`
+                                }
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Badge variant="outline" className={getStatusColor(vaccine.status)}>
+                            {vaccine.status}
+                          </Badge>
+                          {vaccine.status !== 'completed' && (
+                            <Button variant="outline" size="sm">
+                              {vaccine.status === 'overdue' ? 'Schedule Now' : 'Remind Me'}
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Vaccine Statistics */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="glass border-glass-border/20">
+                  <CardContent className="p-6 text-center">
+                    <CheckCircle className="w-12 h-12 text-success mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">Completed</h3>
+                    <p className="text-2xl font-bold text-success">1</p>
+                    <p className="text-sm text-muted-foreground">vaccines up to date</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="glass border-glass-border/20">
+                  <CardContent className="p-6 text-center">
+                    <Clock className="w-12 h-12 text-warning mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">Upcoming</h3>
+                    <p className="text-2xl font-bold text-warning">2</p>
+                    <p className="text-sm text-muted-foreground">vaccines scheduled</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="glass border-glass-border/20">
+                  <CardContent className="p-6 text-center">
+                    <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">Overdue</h3>
+                    <p className="text-2xl font-bold text-destructive">1</p>
+                    <p className="text-sm text-muted-foreground">needs attention</p>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
 
             <TabsContent value="settings" className="space-y-6">
